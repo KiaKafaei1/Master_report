@@ -1,0 +1,60 @@
+\section{Teori områder}
+
+\begin{itemize}
+    \item BIM
+    \item Graph teori.
+    \item kinematic 
+    \item Pathfinding A*
+    \item Start med minimum spanning tree med kruskals algorithm: https://www.youtube.com/watch?v=Rc6SIG2Q4y0
+    \item TSP problem:
+https://www.youtube.com/watch?v=M5UggIrAOME
+    \item Dernæst tjek chrisofides/ prims algoritm
+\end{itemize}
+
+
+
+
+
+\subsection{Dijkstra's algorithm}
+Dijkstra's algorithm is an algorithm to find the shortest path between two nodes in graph. The way it works is by first having a source node or initial node. The distances to all other nodes will be initialized to infinity since the distances are unknown for now. Then the algorithm will look at the neighboor nodes of the source node. It will evaluate the distance to each of the nodes. The distances of the nodes will then be updated in the table of distances, since it is no longer infinity. With done the start node has been visited and will no longer be visited. The next node in the algortihm to evaluate will be the node with the shortest distance to the start node. The neighboors to this node will now be evaluated and again the distance table will be updated. This pattern will keep repeating untill all nodes have been evaluated. 
+
+\subsection{A*}
+A
+
+\subsection{How to get around the building}
+The way to get around the building is using visibility graph. Here you make a node on each portruding corner and also on the doors. This way a path between all nodes can be constructed, this is called a visibility graph.
+(reference the master thesis).
+
+\subsection{How to get from room to room/around the building in a appropriate way?}
+Do we want the shortest route?
+Do we want the route
+
+
+\subsection{Dataset}
+The dataset consists of html code of the room coordinates and the door coordinates. The coordinates are givin in a polygonal triangle structure. This means that the floorplan is drawn from these coordinates by a mesh of triangle polygonals. Each room from in the floorplan consists of its own tree branch, which makes it easy to include or exclude rooms in the floorplan. 
+Describing rooms and floorplans with triangle forming coordinates is a common way and makes sense for many reasons.
+(Insert article reference that describes this way of plotting rooms)
+
+There are also alternative ways to do this. 
+(Insert article reference that describes alternative ways to do this)
+
+
+(Insert picture of floorplan with triangles).
+\\
+The door coordinates also consists of the set of 3 coordinates with a x,y and z coordinate. Where the z coordinate says how tall the door is. 
+\\
+BIM models is also available for use, but will not necessarily be used since we start by modelling in 2D.
+(Describe BIM models)
+
+\subsection{Plotting floorplans}
+\subsubsection{Preprocessing of the dataset}
+Before working with the dataset some preprocessing had to be done. This included splitting the array values in appropriate ways and gathering them in sets of three such that the triangles could be formed. The coordinate_processing module that I made took care of this.
+
+\subsubsection{Removing redundant lines}
+The triangle structure of the dataset forms a mesh that spans the entire floorplan. This does not do a great job of visualising the floorplan in an appropriate way. Some preprocessing has to be done to make the rooms in the floorplan distinguishable from eachother. With a bit of intutition it can be seen that the lines to be removed are a part of more than one triangle, if e.g two triangles are used to span a room the line that should be removed is the one shared by both triangles. The way to remove the redundant lines is by using hashing. The idea here is to make a dictionary where each line is given a key and the same lines will have the same key. The way to make sure that the same lines will get the same key is by using hashing. Then all keys with more than one value (line) will be removed. The idea of using hashing to remove redundant lines was taken from this project (insert project reference).
+
+\subsubsection{Plotting the doors}
+When plotting the doors a challenge occured, which was that a transformation had to be performed on the doors before they were aligned with the rest of the floorplan. 
+This was due to the way the dataset was gathered and the reason for this is unknown. 
+
+

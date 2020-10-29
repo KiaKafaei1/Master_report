@@ -1,0 +1,66 @@
+\section{Noter}
+\subsection{Noter til Paper}
+Trying to solve “Accurate and efficient indoor path planning” since a lot of people uses indoor walking. There are challenges with indoor navigation.
+\\\\
+Industry Foundation Classes (IFC)
+Semantic information in BIM models
+Revit
+Triangular prism subdivision
+Geometric and semantic information
+2D grid subdivision and 3D space subdivision based on triangular prism.
+How about if you use variable sizes of grid, depending on the rooms.
+
+
+\subsection{Noter til master these:Pathfinding in Two-dimensional
+Worlds }
+
+You can represent the 2D world in 2 ways, as a 8-grid system and a polygonal way. The problems with the grid system are suboptimal path length and the problem of choosing a fitting grid resolution.
+
+Polygons works by connecting each portruding corner and making a connection graph.
+
+A* works on graphs and grids
+JPS (jump point search) works on grids only, and is good for large areas of open space.
+
+HPA is also a good algorithm for grid systems but is not necessarily optimal. At most 1\% worse than optimal. Makes use of preprocessing, and clusters the map and makes a graph of higher abstractions such that it gets an overview of the overall structure of the map before doing the pathfinding.
+A fitting cluster size is also of importance for HPA* as we saw in the Scaled Maze map.
+
+VG (visibility graph)
+is an algorithm that works on polygonal maps.
+
+
+
+\subsection{Noter process og generelle tanker}
+\subsubsection{Rapport tanker}
+Rapporten består af undersøgende arbejde og er vigtigere end implementationen.
+Rapport bliver vurderet på diskussion.
+Man kan gøre det på mange måder.
+Ulempen ved connectivitet er at man ikke kan se væggene. Graph måden.
+Find så mange metoder som muligt og skriv hvorfor de andre er dårlige. 
+Det viser at du har tænkt dig. 
+Rapport stuff: for og imod forskellige implementationer.
+Kriterie liste med fordele og ulemper.
+Undersøg begge veje, og argumenter.
+Undersøg på papir og læs dig frem til det. Skriv for og imod for begge. 
+Læs en masse artikler, og skriv alle tanker omkring det.
+
+\subsubsection{Ugentlige rapporter}
+Hvad skete I den forgangne uge, hvad har været nogle problemer.
+Ugerapport der beskriver status.
+Skriv nogle noter til jer selv.
+Små tekst stumper
+Trello planlægning, to do liste
+Include figures and bibtex and notes.
+
+
+\subsubsection{Brainstorm}
+Lav en meget præcis liste med ting du skal have gjort så du altid har noget at lave.
+Brug en time på det i to doist.
+
+Hvad skal jeg gøre i sidste ende?
+Robotten skal kunne bevæge sig fra punkt til punkt i en bygning mens den tager billeder på en etage. Den skal have en strategi til hvordan den går rundt og hvordan den undviger forhindringer.
+
+En meget overordnet planlægning af hvordan du kommer systematisk rundt i en bygning, så den kan blive scannet.
+Denne opgave behøver ikke være så geometrisk. Du kan egentlig se en bygning som en graf, hvor hver knude svarer til et rum.
+
+Det andet element er at komme rundt i de enkelte rum og gå fra rum til rum på en hensigtsmæssig måde.
+How to compare different methods?
