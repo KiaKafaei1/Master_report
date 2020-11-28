@@ -1,0 +1,164 @@
+\section{Teori områder}
+
+\begin{itemize}
+    \item BIM
+    \item Graph teori.
+    \item kinematic 
+    \item Pathfinding A*
+    \item Start med minimum spanning tree med kruskals algorithm: https://www.youtube.com/watch?v=Rc6SIG2Q4y0
+    \item TSP problem:
+https://www.youtube.com/watch?v=M5UggIrAOME
+    \item Dernæst tjek chrisofides/ prims algoritm
+\end{itemize}
+
+
+
+
+\subsection{Dataset}
+The dataset consists of html code of the room coordinates and the door coordinates. The coordinates are givin in a polygonal triangle structure. This means that the floorplan is drawn from these coordinates by a mesh of triangle polygonals. Each room from in the floorplan consists of its own tree branch, which makes it easy to include or exclude rooms in the floorplan. 
+Describing rooms and floorplans with triangle forming coordinates is a common way and makes sense for many reasons.
+(Insert article reference that describes this way of plotting rooms)
+
+There are also alternative ways to do this. 
+(Insert article reference that describes alternative ways to do this)
+
+
+(Insert picture of floorplan with triangles).
+\\
+The door coordinates also consists of the set of 3 coordinates with a x,y and z coordinate. Where the z coordinate says how tall the door is. 
+\\
+BIM models is also available for use, but will not necessarily be used since we start by modelling in 2D.
+(Describe BIM models)
+
+\subsection{Plotting floorplans}
+\subsubsection{Preprocessing of the dataset}
+Before working with the dataset some preprocessing had to be done. This included splitting the array values in appropriate ways and gathering them in sets of three such that the triangles could be formed. The coordinate\_processing module that I made took care of this.
+
+\subsubsection{Removing redundant lines}
+The triangle structure of the dataset forms a mesh that spans the entire floorplan. This does not do a great job of visualising the floorplan in an appropriate way. Some preprocessing has to be done to make the rooms in the floorplan distinguishable from eachother. With a bit of intutition it can be seen that the lines to be removed are a part of more than one triangle, if e.g two triangles are used to span a room the line that should be removed is the one shared by both triangles. The way to remove the redundant lines is by using hashing. The idea here is to make a dictionary where each line is given a key and the same lines will have the same key. The way to make sure that the same lines will get the same key is by using hashing. Then all keys with more than one value (line) will be removed. The idea of using hashing to remove redundant lines was taken from this project (insert project reference).
+
+\subsubsection{Plotting the doors}
+When plotting the doors a challenge occured, which was that a transformation had to be performed on the doors before they were aligned with the rest of the floorplan. 
+This was due to the way the dataset was gathered and the reason for this is unknown. 
+Therefore the doors would have to be placed manually before further analysis could happen.
+
+
+
+\subsection{Grid vs polygonal}
+
+Talk about how you could use the grid version or the polygonal version. Spent a good amount of effort here.
+
+\subsection{Which platform to use}
+\begin{itemize}
+    \item Write about which platform to use. The pros and cons of each. Ros vs Unity vs Python.
+\end{itemize}
+
+
+
+\subsection{TSP}
+\begin{itemize}
+    \item How to represent nodes and graphs? Comparison of different ways and libraries
+    \item Making a weighted graph of all the nodes, where the weights are the Euclidean distance between each node. Write that it is a undirected graph.
+    \item A section on the line intersection algorithm used for connecting the points
+    \item Using dijkstra's/A* to make a complete subgraph of all the relevant nodes, and how this problem is a bit different than the traditional tsp.
+    \item A section of the 2-OPT algorithm and how it uses Minimum Spanning Tree and a DFS traversal. You can talk about alternative algorithms and ther pros and cons.
+    \item A section describing the MST and DFS algorithms and how Networkx implementation work. Maybe a section about adjacency list vs matrix, kruskal vs prims. When to use which.
+\end{itemize}
+
+\subsubsection{Line intersection}
+When determining whether to points on a map are traversable some sort of line intersection algorithm is used. Without using
+line intersection the program wouldn't be able to detect whether there are walls between two points, and it would therefore always
+choose the shortest distance between two points to be a straight line, regardless if it passes through walls or not. 
+
+(insert reference https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/)
+
+The algorithm chosen in this case works by checking first if three points are counterclockwise of eachother.
+
+
+
+
+\subsection{Dijkstra's algorithm}
+Dijkstra's algorithm is an algorithm to find the shortest path between two nodes in graph. The way it works is by first having a source node or initial node. The distances to all other nodes will be initialized to infinity since the distances are unknown for now. Then the algorithm will look at the neighboor nodes of the source node. It will evaluate the distance to each of the nodes. The distances of the nodes will then be updated in the table of distances, since it is no longer infinity. With done the start node has been visited and will no longer be visited. The next node in the algortihm to evaluate will be the node with the shortest distance to the start node. The neighboors to this node will now be evaluated and again the distance table will be updated. This pattern will keep repeating untill all nodes have been evaluated. 
+
+\subsection{A*}
+A
+
+\subsection{How to get around the building}
+The way to get around the building is using visibility graph. Here you make a node on each portruding corner and also on the doors. This way a path between all nodes can be constructed, this is called a visibility graph.
+(reference the master thesis).
+
+\subsection{How to get from room to room/around the building in a appropriate way?}
+Do we want the shortest route?
+Do we want the route
+
+
+
+\subsection{Dimensions of robot}
+\begin{itemize}
+    \item Write about how to incorporate the dimensions of the robot in your simulation
+\end{itemize}
+
+
+\subsubsection{Distance field vs distance route}
+The dimensions of the robot is mostly needed to make sure that the robot does not bump into walls or other objects. And also to make sure that a path that is deemed traversable is not in reality too narrow for the robot to pass through.
+So far the robot has been modeled by a point, it is now time to include a radius to that point which will represent the robots dimensions.
+
+There are multiple ways to go about the challenge of incorporating the dimensions of the robot in the simulation. 
+One way is to discretize the entire map and for each cell find the distance to the nearest wall. If the distance from the wall to the cell is smaller than the radius of the robot, the cell will be deemed not traversable since this means that the robot will hit the wall. If the distance to the wall is larger than the radius the cell is traversable. What we get by doing this is a boolean distance field. Where we have nodes that are traversable and nodes that aren't.
+The issue with this approach is that it is not very scalable to bigger buildings. More on this is written in chapter 10.
+The good thing about this approach is that it is easy and a straightforward way to tell the robot which places it is allowed to traverse and which are not. It can not go wrong with this approach. 
+It is also fast to look up because you have done the preprocessing before hand.
+
+
+The other way is to discretize the route. This is a bit more complicated implementation but will be rewarded by its scalability to bigger buildings. 
+The idea here is to only discretize the route that the robot will walking instead of discretizing the entire map. 
+Along the route the robot will check if it is near a wall using a distance function. The interval here can be dynamic e.g if the distance to the nearest wall is 5 meters and the radius of the robot is 1 meter it can walk for 4 meter without hitting a wall.
+This means that between 2 nodes - a start and an end node - a lot more nodes will be placed. The robot will go to a node find the distance to the nearest wall and then check walk in a straight line towards the node it is seeking the same amount as the distance to the nearest wall minus the radius. Then it will check again to see what the distance to the nearest wall is and repeat the process. It is important that the room/end nodes are a certain radius away from the walls to begin with. 
+
+One way to go about this is to check the distance to all the walls for every node. This does not scale very well when the number of walls increases. 
+Another way is to have a certain datastructure that takes all the walls and find the nearest quickly.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Optimal placement of nodes}
+\begin{itemize}
+    \item Write about scenic route vs discrete points.
+    \item Write about SLAM
+    \item optimal placement of nodes
+\end{itemize}
+
+\subsubsection{Simultanous location and mapping}
+As the name indicates SLAM is about localizing your robot in the map while you also do the mapping part. The way this is done is by using sensors such as a lidar - it could also be other types of sensors. Then there are some other steps in the process. Since inn this case the mapping has already been done it doesn't really make sense to do the SLAM. It might be a good idea to find a way for the robot to localize itself, without need to do the mapping.
+
+
+
+\subsection{Spot}
+\begin{itemize}
+    \item Write about Spot and how it is a usefull robot for this thesis
+    \item Write about different platforms for programming Spot, python API vs ROS.
+\end{itemize}
+
+\subsection{Future work}
+\begin{itemize}
+    \item A section about stairs
+\end{itemize}
+
+

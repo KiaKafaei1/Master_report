@@ -1,0 +1,84 @@
+\section{Code notes}
+
+\subsection{#1}
+This is a function called dict_hashing. The purpose of this function is to hash the lines.
+
+\subsection{Plotting rooms}
+In this section we plot the floorplan outline and the rooms within it. We start by doing some simple preprocessing of the csv file with the rooms. 
+The number of coordinates of each room is always dividable by 3 since it is created in such a way that each room is spanned by sets of triangles - hence it takes 3 coordinates to make up a triangle.
+
+For each triangle we hash all lines in that triangle in a dictionary in both direction. This means that we hash 6 lines per triangle. The reason for this is that a triangle might have the same line as another triangle but in reverse order. These two lines should be seen as the same. Therefore we have to hash both directions of each line in every triangle.
+
+For example say we have a line in one triangle (x1,y1) - (x2,y2). What we do is that we hash the line (x2,y2)-(x1,y1) as well. What happens now is that the other triangle has the same line but as (x2,y2) - (x1,y1). Just like the other triangle both directions will be hashed meaning (x1,y1)-(x2,y2). The way hashing works is that 2 identical values will give the same hash key. In this example we now have 2 values for 2 different hash keys, since the same line is occuring twice in 2 different hashes.
+
+Now each dictionary element that has more than one value is removed. Therefore both of the hashes will be removed and we have made sure that the line is correctly removed.
+
+Some other removal criterias are also present. This include manually removing lines/ walls that clearly are misplaced.
+
+The way we hash also has the consequence of having each line existing twice in the dictionary. Therefore one of the directions of each line is removed. This makes the dictionary half as long and makes is more efficient for use later if need be.
+
+At last we plot each line in the dictionary.
+And repeat the process for a new room, setting the dictionary back to empty. The dictionary is concatenated with another dictionary that keeps all the lines of the floorplan for later use.
+
+
+\subsection{Plotting the doors}
+Again the program does some preprocessing on the csv file with the door coordinates. This csv file include the coordinate of each door and the direction it is facing. The last line of the csv consists of the coordinate translation.
+
+For each door - depending on the direction it is facing - another door will be added on the other side of the wall it is facing. This makes it possible to go through doors. The reason for this will be explained in the TSP section.
+
+Each door and its copy is then plotted.
+
+\subsection{Adding room nodes}
+The room nodes are the nodes are points of interest that the spot robot should visit. At this point the points are placed manually and arbitrarely. Later some algorithm will be made to place them.
+
+\section{Traveling salesman approximate path}
+\subsection{plotting all walkable paths}
+The objective here is to for each node have which other nodes it can traverse to. The path between two nodes is not traversable if it is obstructed by a wall. 
+An easy way to implement this is using a network datastructure. In this case the networkx framework is used. Nodes are created in the network for all points created - which includes door nodes and room nodes. 
+Line intersection is them used to check if two nodes are traversable.
+If they are traversable then we add an edge between the two nodes to the network with the weight of the edge being the euclidean distance between the two nodes.
+
+
+\subsection{Shortest path between all "room" nodes}
+The objective here is to find the shortest traversable path between all room nodes. This is usefull when we later want to find the minimum spanningtree and the approximate TSP solutions.
+
+The networkx library has a function that performs dijkstras algorithm. A foor loop is run for each room node.The dijkstra function takes in the Network and a source node and outputs its distance to all other nodes and also the predecessors. The predecessors is for example if there are 4 nodes 1,2,3,4. If 1 and 4 is not directly connected, but are connected via node 2. What will happen is that the distance between 1 and 4 is still calculated in the distance output of the function but the predecessors for 2 will be 1 and for 4 will be 2 (if 1 is the source node).
+
+
+\subsection{Make complete subgraph of all room nodes}
+To use the approximate solutions of the tsp problem, many rely on the assumption of a complete graph. This means that all nodes in the graph are connected. One thing to note is that since we don't wish to find the tsp solution for all nodes (door,corner and room nodes) we wish to make a subgraph of only the room nodes. This graph should also be complete. 
+
+This is done by first making a new graph that only include the room nodes.
+We then compute the distance between each node in G_rooms using dijkstras function again.
+
+
+
+\subsection{Minimum spanning tree}
+This is a one line code that makes a minimum spanning tree given a network. This comes from the networkx framework. 
+The minimum spanning tree is needed to do the approximate solution of the tsp problem.
+
+
+\subsection{Solve TSP problem for subgraph using DFS traversal}
+This is again a one line of code, where a depth first search traversal is performed on the minimum spanning tree of the rooms. 
+
+The next step to finalize the tsp solution is to remove double vertices occuring when doing the depth first seach algorithm on the minimum spanning tree.
+
+The dfs list consists of node pairs with a 'from' node and a 'to' node.
+e.g
+(1,2), (2,3), (3,4) etc.
+We can have that the 'from' node of the current node pair is not the 'to' node of the previous node pair. 
+e.g
+(1,2), (1,3)
+When this happens we want to make i a shortcut such that it goes directly from 2 to 3 without going back to one.
+
+
+We do this by having a for loop that runs through all node pairs in the list of the depth first search edges. 
+If the 'to' node in the previous node pair
+is not the same as the from node in the next node pair then the new 'from' node should be the previous 'to' node and the new 'to' node
+should be the current 'to' node.
+For example if we have (1,2), (1,3) then because we go back to 1 we change it to (1,2), (2,3).
+
+
+
+\subsection{#9}
+\subsection{#10}

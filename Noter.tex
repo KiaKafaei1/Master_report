@@ -64,3 +64,158 @@ Denne opgave behøver ikke være så geometrisk. Du kan egentlig se en bygning s
 
 Det andet element er at komme rundt i de enkelte rum og gå fra rum til rum på en hensigtsmæssig måde.
 How to compare different methods?
+
+\subsection{Thesis noter}
+Explain the fundamental problems which will be the background of your theses.
+Maybe build it up as a story.
+Say not what you are going to do but why.
+Start with the why. Elevator pitch in the first section.
+Remember that you are writing with human beings. Have a good flow. Have 1.5 months for report writing.
+Nudge people into the topic and not straight into it.
+
+Related works doesn't have to be detailed.
+Theory of the things you use is background
+Present papers in related work, provide an overview of the theories briefly.
+Background is only theory on what you have implemented.
+Related might be after background.
+More than 5 references, have as many as possible.
+How long the report, write more background if bad contribution, more report.
+The reader should not have a burning question.
+Be very explicit about the scope of the report.What will you not go into.
+
+Method is about what you have done yourself, no matter what you have followed, make proper citation 
+You can also have a little introduction paragraph, saying you are following this method.
+Have implementation section, the tools, the computer used.
+
+How to show the results?
+How to make results?
+What results could you present that support that you finished the project.
+Google sheets
+
+All the timer consider getting credit for what you did
+Get more credit by discussing the way you got there. Some of the considerations you made and the issues you solved.
+Explain how you ended up with the final product and why?
+By extending the method section.
+
+We can get a quick readthrough of the report but not a detailed read
+
+
+\subsection{Uge 7}
+Figure out exactly whats going on with data.
+It seems that it is mixing up axis.
+Switching x,y for the doors
+RAC look into the building 
+Study the format and file
+send code and description to andreas, also useful for report.
+
+What I want to do is to remove all doors that are not connected to a wall. To do this I am going to find the distance for each point to all the walls (might change this to closest walls). Since I only have the coordinates and not the lines what I am going to do is to make a triangle including the two points of the line and the third point being the door node. I am going to find the length of each side of the triangle. Using Herons formula I will find the area, and knowing the area I will find the height of the triangle. The only issue is that the distance from the point to the line is not always equal the height of the triangle. The distance could be longer - not shorter though.
+
+Sagen er den at RAC bygningen er ikke en bygning der eksisterer i virkeligheden (ihvertfald ikke I Danmark). Jeg har fundet 3D modellen af bygningen, hvor vægge dog ikke er inkluderet. Jeg tænker at få simuleringen til at fungere på en simpel udgave af bygningen og derefter arbejde på noget mere komplekst pathfinding. Først vil jeg dog plotte dørene.
+
+\subsection{Uge 8}
+Remove the doors that are floating, make the synthetic data clean
+Find a way to place corners, start with manually placing corners, find an algorithm later in the project.
+Go back later on, generally you should have a working implementation before fiddling with the  different things.
+One way to implement the radius of the robot is to make all the walls thicker and keep the point as is.
+
+\subsection{uge 9}
+Not likely scenario 
+Discuss with Dalux advisor 
+Thicken walls with radius
+Distance fields with radius
+Distance fields, compute distance to closest wall
+sample distance field and check for radius
+Discretize the entire scene, for every point calculate distance to closest wall
+Image of distance field which we can sample
+spent time writing for thesis the obstacles in a more general, high level problems
+find function for point line segment distance 
+easy to debug
+
+\subsection{10}
+Diskretisere selve ruten
+Find nærmeste væg 
+KDtrees datastruktur 
+litteratur på datastrukturer
+case med ustabilitet
+lav test setup
+Diskretisere rummet med kasser
+raytracing på punktet
+Tradeoff mellem skanningspunkter og afdækning
+tænk over corner nodes
+Behæver ikke tænke på loxalization lige nu
+Tag hensyn til søjler når du scanner 
+Tænk over kasser i rummet problemet
+
+En optimal strategi kunne være at placere midt i rummet og tage billeder dér.
+
+Find en måde at autogenere rum noder som er placeret midt i rummet
+
+Læs op på slam og hvordan det fungerer.
+
+Find en måde at autogenerere corner nodes.
+
+Behøver robotten localization hvis vi giver den en map?
+
+Lave autogenerering af ønskede noder.
+
+Pros and cons: 
+Distance field:
+- Fordelen ved at lave et diskret distance field er, at du kan udregne det væg for væg, og når du er færdig, så kan du bruge det - og det er lynhurtigt at slå op i et billede. 
+
+Diskret rute:
+Pros:
+- Bemærk dog at du ikke behøver at beregne afstanden med fast interval i alle tilfælde. Hvis nu robottens radius er 0.5 m og der er 10 m til nærmeste væg, så kan robotten jo bevæge sig 9.5 m før den rammer noget. Det kan gøre det hele lidt hurtigere.
+- Jeg ville mene at det letteste var bare at have en masse punkter og så bruge afstandsfunktionen til at teste om robotten kan komme fra et punkt til et andet punkt ved at gå i lige linje.
+Cons:
+- Hvis du laver en funktion, der finder afstanden, så skal du enten løbe alle vægge igennem, hver gang du ønsker at finde afstanden - eller du skal have en datastruktur, der gør at du hurtigt kan finde den nærmeste væg. Det første er let nok men kan blive tungt hvis du har virkeligt mange vægge, og det andet tilføjer lidt kompleksitet.
+
+
+I think I can drop the idea of corner nodes.
+
+The idea in general is to implement the route in such a way that it first check if route is traversable if not it moves 90 degrees in either direction. It checks again and goes back and moves 90 degrees in the other direction and keeps checking until it finds a traversable path. It then finds the distance to the nearest wall (minus the radius) and walks that amount in a straight line towards the end node. It then moves a bit 90 degrees and sees if the distance to the nearest wall is decreasing or increasing.
+
+It might be easiest to do discretization and do A* algorithm.
+
+
+Can I avoid corner nodes?
+Place the corner nodes a certain distance from the corner, equal to the radius.
+
+We have to save the vector if we want to turn 90 degrees.
+The vector is just the difference in y coordinates and the difference in x coordinates.
+The amount we go left and right is the amount of distance to closest wall.
+
+Does this way of thinking work?
+I think it works in 99 \% of scenarios but we will have to think of scenarios where this doesn't work.
+
+What do we need to make this implementation work?
+
+There are 2 types of obstacles, the ones we know before hand and that we can plan for.
+And then there are the ones that we don't know about random chair in the room etc.
+For now we are only solving for the obstacles that we do know about.
+Maybe it is okay that it only works 99\% of the time.
+
+Another way is to make it keep going right until it finds a direct path to the end node.
+It should only do this when it has tried the first algorithm and that doesn't work.
+
+There are no scenarios where the combination of these two algorithms don't work.
+Given the assumption that there is a direct (not straight/linear) path between the 2 nodes.
+
+How to make the discrete route 100\% correct.
+
+\subsection{11}
+It is an active research area
+Quite a bit of litteratur 
+Read  the papers that Jeppe sent
+One is about beloney tiangulation where it triangulates the entire area
+Switching algorithm to A star
+Keep only the second algortihm and remove the first algorithm
+Local geomtry investigation
+Keep the discussion for the report
+Keep A*
+This is not a navigable part, split and go in both directions
+Split the robot in 2 and check in paralellel. You will get a tree.
+Stopping criteria  will be a certain distance before giving up
+Keep the distance field in the report
+All the features should be discussed. 
+
+
