@@ -65,6 +65,23 @@ Denne opgave behøver ikke være så geometrisk. Du kan egentlig se en bygning s
 Det andet element er at komme rundt i de enkelte rum og gå fra rum til rum på en hensigtsmæssig måde.
 How to compare different methods?
 
+\section{Svar på spm}
+\subsection{Skal jeg skrive i passiv eller aktiv form?}
+The project is being worked on in collaboration with...
+I am working on the project in collaboration with…
+\\\\
+Brug aktiv form. En gang på siden bruge “I”.
+Som regel inkluderer man læseren og bruger “We”, hvis det er noget du har lavet så “I”.
+Tit bruger man ikke personer som subjekt.
+Brug mest aktiv, der må gerne være lidt passivt.
+
+
+Gulv areal hvert pixel bliver et grid punk. Skyd en email hvis du løbetr ind i problemer.
+Unity reflect det der oversætter bim modeller til unity. Hen ad vejen måske.
+Ray trace bim model der kunen hjælpe med at finde ud af fra et punkt til et andet.
+
+
+
 \subsection{Thesis noter}
 Explain the fundamental problems which will be the background of your theses.
 Maybe build it up as a story.
@@ -98,6 +115,12 @@ Explain how you ended up with the final product and why?
 By extending the method section.
 
 We can get a quick readthrough of the report but not a detailed read
+
+General rule is that the citation should not be as nouns.
+Use the name of the reference, and then cite.
+Write the name of author and the year not the name of the paper. Typically.
+How much in appendix all code or just link to github?
+Rule of thump have small code snippets in the actual report if it is important. It is fine in the appendix just have the link to the github repository.
 
 
 \subsection{Uge 7}
@@ -217,5 +240,84 @@ Split the robot in 2 and check in paralellel. You will get a tree.
 Stopping criteria  will be a certain distance before giving up
 Keep the distance field in the report
 All the features should be discussed. 
+
+This solution does not work very well do to the fact that sometimes you can walk through walls and sometimes you can't. When you are a door node you can walk through walls and when you are not a door node you can not walk through walls. Basically when the distance is small enough you can walk through the walls.
+A solution for this would be to tell the algorithm if there is a door between the room nodes then go to it first.
+Doing a distance field and discretizing it will give a much more elegant and simpler solution and might be better when I in the future want to do optimal placement of room nodes.
+The issue now is that lets say you want to walk from a to b and there are an obstacle in the way. You could of course discretize the route such that you could get there, but what if you can't get there.
+99\% of the time we are not talking about obstacles but about walls and therefore doing this a star kind of algorithm does not seem to be a good solution because there will not be an available route a big chunk of the time, because we often are going from room to room. 
+
+A third way is to follow the same scheme as has been done so far and only rely on corner nodes and door nodes to go from node to node. This should in theory work and should only not work when we have a straight path that is too narrow. 
+How should the distance field approach work with my current implementation?
+We place randomly placed room nodes and we want to go through all room nodes. 
+
+We split the grid in walkable cells and non walkable cells. The cells near door nodes will be walkable.
+We can still use dijkstra's algorithm to find the shortest distance between each room node, but A* is more cost effective.
+They both give optimal solutions.
+I probably don't need to check for line intersection anymore? Since I can just say that all door nodes are traversable.
+
+What if the door nodes don't fit in the grid system, we can not just round the door down to the nearest cell, since that would change the placement of the door.
+
+Right now I use dijkstras algoritm because it was straight foorward to use with the networkx framework
+I should probably switch that to an A star approach in the future since it is faster. Are stuff that optimize time worth looking into now? since it is basically all precomputed so 
+time will not be that important of a factor.
+
+
+
+So what should the algorithm do:
+
+The way it should work is that we have a start node and an end node. The robot wants to go from the start node to the end node. The robot walks toward the end node until it hits an obstacle or the path is too narrow. It then splits in 2 direction one going right and the other left.
+
+Basically just implement the A* algortihm I think that is the right way to go about it.
+We could also discretize the map every time we run into problems.  90 percent of the time it will be a smooth walk from one end to another. When there are obstacles ahead we discretize and implement A*. 
+
+The robot is only 50 cm in width and 110 cm in length. I don't think we will run into a narrow path problem since most buildings are meant for humans and the average
+human width for men is 41 cm according to  https://www.healthline.com/health/average-shoulder-width#why-we-measure. The method for measurement may wary.
+I just use 50 cm as radius to be on the safe side.
+
+My plan now is to:
+- Implement the second algorithm which will be a form of A* algorithm
+- Skim the two papers that Jeppe sent
+- Do parallel checking with the robot
+- Do a discussion in the report, keep the distance field in the report
+- Implement a stopping criteria after a certain distance
+- Place corner nodes a certain distance from wall
+- Lets give the robot a radius of 50 cm
+
+
+\subsection{12}
+You should try to tell a particular story. But also be open with your data.
+Be very preceise what you are trying to achieve 
+you need a graph 
+Floorplan to graph is important
+Once you have a graph and planning the movement will be a graph problem.
+You know when you have visited the entire floorplan.
+Seperations of concerns it is hard to know when you have fixed the problem
+Think of it as just creating a graph
+If all the rooms were convex
+Scalability is not a problem
+Another simple thing is to randomly place nodes
+The distance field problem is a lot of nodes.
+Convex decomposition 
+Decomposs each room into convex shapes.
+Be super precise by first making a graph such that you are sure that it is physically realisable
+Not much much bigger than necessary
+What properties are needed for the graph
+It comes down to precision, we haven't made quite precise.
+It should find a path 99% of the time.
+The problem is to find a path where you are sure the robot can walk around the building.
+The problem with the corner node is there could be an obstacle where the corner node is.
+Backtrack and ask yourself waht do you need from the algortime.
+Find placement of nodes
+And how should they be connected.
+You don't need optimal solution.
+Random placement.
+Make a list of possibilities.
+convex decompomposition.
+
+optimality is not important, completness is important.
+BSP tree
+Hierachil decomposition of space
+hiearachy of bounding boxes
 
 
